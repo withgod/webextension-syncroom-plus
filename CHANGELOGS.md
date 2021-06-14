@@ -1,5 +1,43 @@
 # CHANGELOGS
 
+## v1.13.0
+
+### 変更
+
+- パスワード保存機能追加
+
+### 依存パッケージ
+
+- @babel/preset-env from 7.14.2 to 7.14.4
+- @types/node from 15.6.1 to 15.12.0
+- @vue/composition-api from 1.0.0-rc.9 to 1.0.0-rc.10
+- core-js from 3.12.1 to 3.13.1
+- eslint-plugin-import from 2.23.3 to 2.23.4
+- eslint-plugin-vue from 7.9.0 to 7.10.0
+- sass from 1.34.0 to 1.34.1
+- sass-loader from 11.1.1 to 12.0.0
+- twemoji from 13.0.2 to 13.1.0
+- typescript from 4.2.4 to 4.3.2
+- vue and vue-template-compiler
+- webpack from 5.37.1 to 5.38.1
+
+## v1.12.0
+
+### 変更
+
+- 絵文字をTwemojiに置き換え
+
+### 依存パッケージ
+
+- @types/node from 15.3.1 to 15.6.1
+- copy-webpack-plugin from 8.1.1 to 9.0.0
+- css-loader from 5.2.5 to 5.2.6
+- eslint from 7.26.0 to 7.27.0
+- eslint-config-standard from 16.0.2 to 16.0.3
+- eslint-plugin-import from 2.23.2 to 2.23.3
+- sass from 1.33.0 to 1.34.0
+- ts-node from 9.1.1 to 10.0.0
+
 ## v1.11.2
 
 ### 変更

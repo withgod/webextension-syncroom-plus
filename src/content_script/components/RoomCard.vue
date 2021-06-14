@@ -8,15 +8,14 @@
         | {{remainingTime}}
     .card__header__item
   .card__body
-    h3.room_name
-      | {{ roomName }}
+    h3.room_name(v-html="roomNameHTML")
 
     p.room_tags
       b-taglist
         b-tag(v-for="tag in roomTags", :key="tag")
-          | {{tag}}
+          span(v-html="twemoji.parse(tag)")
 
-    p.room_desc(v-html="linkedRoomDesc")
+    p.room_desc(v-html="roomDescHTML")
 
     Members(:members="members", :room-create-time="createTime")
 
@@ -32,7 +31,7 @@
       .level
         .level-left
           b-button(type="is-light" @click="onOpenTentativeSyncroom")
-            | {{translate("take_a_peek")}}
+            | {{translate("temporary_entry")}}
 
         .level-right
           b-button.card__body__buttons__entry-button(v-if="needPasswd", type="is-dark" @click="onOpenSyncroom", icon-left="lock")
@@ -43,11 +42,17 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
+
+// @ts-ignore
+import twemoji from 'twemoji';
+
 import Members from './Members';
+import PasswordPrompt from './PasswordPrompt';
 import store from '../../store';
 
 import makeJoinUri from '../../lib/make_join_uri';
 import { translate } from '../../lib/i18n';
+import { ModalProgrammatic as Modal } from 'buefy';
 
 type Props = {
   createTime: string;
@@ -111,11 +116,14 @@ export default defineComponent({
 
     const onOpenSyncroom = () => {
       if (props.needPasswd) {
-        const pwPrompt = window.prompt(translate('please_enter_room_password'), '');
-
-        if (pwPrompt) {
-          location.href = makeJoinUri(props.roomName, pwPrompt, false);
-        }
+        Modal.open({
+          component: PasswordPrompt,
+          props: {
+            roomName: props.roomName,
+            temporaly: false,
+          },
+          hasModalCard: true,
+        });
       } else {
         location.href = makeJoinUri(props.roomName, '', false);
       }
@@ -123,18 +131,21 @@ export default defineComponent({
 
     const onOpenTentativeSyncroom = () => {
       if (props.needPasswd) {
-        const pwPrompt = window.prompt(translate('please_enter_room_password'), '');
-
-        if (pwPrompt) {
-          location.href = makeJoinUri(props.roomName, pwPrompt, true);
-        }
+        Modal.open({
+          component: PasswordPrompt,
+          props: {
+            roomName: props.roomName,
+            temporaly: true,
+          },
+          hasModalCard: true,
+        });
       } else {
         location.href = makeJoinUri(props.roomName, '', true);
       }
     };
 
-    const linkedRoomDesc = computed(() => {
-      return props.roomDesc
+    const roomDescHTML = computed(() => {
+      const linkedHTML = props.roomDesc
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -148,6 +159,8 @@ export default defineComponent({
           const noAtTwitterID = twitterID.replace(/@|＠/g, '');
           return `<a href='https://twitter.com/${noAtTwitterID}' target='_blank' rel='noopener noreferrer'>${twitterID}</a>`;
         });
+      const result = twemoji.parse(linkedHTML);
+      return result;
     });
 
     const isNoVacancy = computed(() => {
@@ -158,15 +171,21 @@ export default defineComponent({
       return store.getters['notificationVacancyRooms/rooms'].find((r: any) => r.uid === `${props.createTime}||${props.roomName}`);
     });
 
+    const roomNameHTML = computed(() => {
+      return twemoji.parse(props.roomName);
+    });
+
     return {
       translate,
       onSetNotificationVacancyRoom,
       onRemoveNotificationVacancyRoom,
       onOpenSyncroom,
       onOpenTentativeSyncroom,
-      linkedRoomDesc,
+      roomDescHTML,
       isNoVacancy,
       isNotificationVacancyRoom,
+      roomNameHTML,
+      twemoji,
     };
   },
 });
