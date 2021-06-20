@@ -65,6 +65,8 @@
       .skeleten_room_card.room-list-item.has-background-light(v-for="n in 8", :key="`skeleton-${n}`")
 
     .SYNCROOM_PLUS-main__rooms(name="room-list", :is="roomComponent")
+      .room-list-item(key="room-ad", v-show="!isEmptyFilteredRooms")
+        AdCard
       RoomCard.room-list-item(
         v-for="room in filteredRooms",
         v-show="room.show",
@@ -118,6 +120,7 @@ import twemoji from 'twemoji';
 import axiosClient from '../lib/axios';
 import { defineComponent, computed, onBeforeUnmount, ref } from '@vue/composition-api';
 import store from '../store';
+import AdCard from './components/AdCard';
 import RoomCard from './components/RoomCard';
 import Message from './components/Message';
 import Navbar from './components/Navbar';
@@ -129,6 +132,7 @@ import { ModalProgrammatic as Modal } from 'buefy';
 
 export default defineComponent({
   components: {
+    AdCard,
     RoomCard,
     Navbar,
     Footer,
